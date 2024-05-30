@@ -3,17 +3,16 @@
 public record GetProductByIdQuery(Guid Id) : IQuery<GetProductByIdResult>;
 public record GetProductByIdResult(Product Product);
 
-public class GetProductByIdHandler(IDocumentSession session, ILogger<GetProductByIdHandler> logger) 
+public class GetProductByIdHandler(IDocumentSession session) 
     : IQueryHandler<GetProductByIdQuery, GetProductByIdResult>
 {
     public async Task<GetProductByIdResult> Handle(GetProductByIdQuery qurey, CancellationToken cancellationToken)
-    {
-        logger.LogInformation("GetProductByIdHandler.Handler called with {@Query}", qurey);
+    {        
         var product = await session.LoadAsync<Product>(qurey.Id, cancellationToken);
         
         if (product == null)
         {
-            throw new ProductNotFoundException();
+            throw new ProductNotFoundException(qurey.Id);
         }
 
         return new GetProductByIdResult(product);

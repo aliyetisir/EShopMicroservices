@@ -9,14 +9,12 @@ public record UpdateProductCommand(
         decimal Price
     ) : ICommand<UpdateProductResult>;
 public record UpdateProductResult(bool IsSuccess);
-internal class DeleteProductHandler(IDocumentSession session, ILogger<DeleteProductHandler> logger)
+internal class DeleteProductHandler(IDocumentSession session)
     : ICommandHandler<UpdateProductCommand, UpdateProductResult>
 {
     public async Task<UpdateProductResult> Handle(UpdateProductCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("UpdateProductHandler.Handle called with {@Command}", command);
-
-        var product = await session.LoadAsync<Product>(command.Id, cancellationToken) ?? throw new ProductNotFoundException();
+        var product = await session.LoadAsync<Product>(command.Id, cancellationToken) ?? throw new ProductNotFoundException(command.Id);
         
         product.Name = command.Name;
         product.Category = command.Category;
