@@ -17,10 +17,10 @@ public class GetBasketEnpoints : ICarterModule
 
             return Results.Ok(response);
         })
-            .WithName("GetBasketById")
-            .Produces<GetBasketResponse>(StatusCodes.Status200OK)
-            .ProducesProblem(StatusCodes.Status400BadRequest)
-            .WithSummary("Get Product By Id")
-            .WithDescription("Get Product By Id");
+        .WithName("GetBasketById")
+        .Produces<GetBasketResponse>(StatusCodes.Status200OK)
+        .ProducesProblem(StatusCodes.Status400BadRequest)
+        .WithSummary("Get Product By Id")
+        .WithDescription("Get Product By Id");
     }
 }

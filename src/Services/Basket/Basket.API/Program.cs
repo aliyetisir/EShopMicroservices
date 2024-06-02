@@ -13,11 +13,14 @@ builder.Services.AddMediatR(config =>
 
 builder.Services.AddValidatorsFromAssemblies([assembly]);
 
-//builder.Services.AddMarten(opts =>
-//{
-//    opts.Connection(builder.Configuration.GetConnectionString("Database"));
-//})
-//    .UseLightweightSessions();
+builder.Services.AddMarten(opts =>
+{
+    opts.Connection(connectionString: builder.Configuration.GetConnectionString("Database"));
+    opts.Schema.For<ShoppingCart>().Identity(x=>x.UserName);
+})
+.UseLightweightSessions();
+
+builder.Services.AddScoped<IBasketRepository, BasketRepository>();
 
 var app = builder.Build();
 // configure the HTTP request pipeline
