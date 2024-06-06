@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container
+
+// Application Services
 builder.Services.AddCarter();
 var assembly = typeof(Program).Assembly;
 builder.Services.AddMediatR(config =>
@@ -17,6 +19,7 @@ builder.Services.AddMediatR(config =>
 
 builder.Services.AddValidatorsFromAssemblies([assembly]);
 
+// Data Services
 builder.Services.AddMarten(opts =>
 {
     opts.Connection(builder.Configuration.GetConnectionString("Database")!);
@@ -31,6 +34,7 @@ builder.Services.AddStackExchangeRedisCache(options =>
     options.Configuration = builder.Configuration.GetConnectionString("Redis");
 });
 
+// Grpc Services
 builder.Services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>(options =>
 {
     options.Address = new Uri(builder.Configuration["GrpcSettings:DiscountUrl"]!);
@@ -45,6 +49,7 @@ builder.Services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>(
     return handler;
 });
 
+// Cross-Cutting Services
 builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 builder.Services.AddHealthChecks()
     .AddNpgSql(builder.Configuration.GetConnectionString("Database")!)
